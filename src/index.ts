@@ -5,6 +5,12 @@ import {
   MouseEvent,
 } from 'react';
 
+import { HSNoScrollbar, HSContainer } from './styles'
+
+const HEIGHT = 200;
+const GUTTER = 10;
+const ITEMS = 10;
+
 /**
  * Document Wrapper draggable state
  */
@@ -82,5 +88,22 @@ export const useDraggableScroll = () => {
     dispatch({ type, pageX, element: slideArea });
   };
 
-  return [handleEvent, slideArea]
+  const hsProps = {
+    height: HEIGHT,
+    gutter: GUTTER,
+    items: ITEMS,
+    ref: slideArea,
+    onMouseMove: handleEvent,
+    onMouseDown: handleEvent,
+    onMouseUp: handleEvent,
+    onMouseLeave: handleEvent,
+  }   
+
+  return {
+    slideArea,
+    handleEvent,
+    hsProps,
+    HSContainer,
+    HSNoScrollbar,
+   } // HorizontalScroller
 }
