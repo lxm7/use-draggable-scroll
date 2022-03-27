@@ -1,11 +1,6 @@
-import {
-  useRef,
-  useReducer,
-  RefObject,
-  MouseEvent,
-} from 'react';
+import { useRef, useReducer, RefObject, MouseEvent } from "react";
 
-import { HSNoScrollbar, HSContainer } from './styles'
+import { HSNoScrollbar } from "./styles";
 
 const HEIGHT = 200;
 const GUTTER = 10;
@@ -14,7 +9,7 @@ const ITEMS = 10;
 /**
  * Document Wrapper draggable state
  */
- export type State = {
+export type State = {
   isDown: boolean;
   startX: number;
   scrollLeft: number;
@@ -23,11 +18,19 @@ const ITEMS = 10;
 /** initial state for the draggable area
  * @type {State}
  */
- const initialState: State = {
+const initialState: State = {
   isDown: false,
   startX: 0,
-  scrollLeft: 0,
+  scrollLeft: 0
 };
+
+export type Config = {
+  noOfItems?: number;
+  height?: number;
+  itemWidth?: number;
+  gutter?: number;
+  hideScrollbar?: boolean;
+}
 
 /** This reducer will fire each time a mouseevent is passed in from the
  * ArticlWrapper to create a horizontally draggable area. We split
@@ -37,31 +40,31 @@ const ITEMS = 10;
  * @param { type: string, pageX: number, element: RefObject<HTMLDivElement> }
  * @returns {State}
  */
- const dragReducer = (
+const dragReducer = (
   state: State,
   {
     type,
     pageX,
-    element,
+    element
   }: { type: string; pageX: number; element: RefObject<HTMLDivElement> }
 ) => {
   const sliderArea = element.current as HTMLDivElement;
 
   switch (type) {
-    case 'mousedown':
+    case "mousedown":
       return {
         ...state,
         isDown: true,
         startX: pageX - sliderArea.offsetLeft,
-        scrollLeft: sliderArea.scrollLeft,
+        scrollLeft: sliderArea.scrollLeft
       };
-    case 'mouseleave':
-    case 'mouseup':
+    case "mouseleave":
+    case "mouseup":
       return { ...state, isDown: false };
-    case 'mousemove': {
+    case "mousemove": {
       if (!state.isDown) return state;
       const x = pageX - sliderArea.offsetLeft;
-      const walk = x - state.startX; // * 2 for faster scroll
+      const walk = x - state.startX;
       sliderArea.scrollLeft = state.scrollLeft - walk;
       return state;
     }
@@ -70,7 +73,7 @@ const ITEMS = 10;
   }
 };
 
-export const useDraggableScroll = () => {
+export const useDraggableScroll = (config: Config) => {
   const slideArea = useRef<HTMLDivElement>(null);
   const [, dispatch] = useReducer(dragReducer, initialState);
 
@@ -79,7 +82,7 @@ export const useDraggableScroll = () => {
    *
    * @param {MouseEvent} e
    */
-   const handleEvent = (e: MouseEvent) => {
+  const handleEvent = (e: MouseEvent) => {
     // We need to persist the event when using mouseevents in React
     e.persist();
     const { type, pageX } = e;
@@ -89,21 +92,25 @@ export const useDraggableScroll = () => {
   };
 
   const hsProps = {
-    height: HEIGHT,
-    gutter: GUTTER,
-    items: ITEMS,
+    height: config.height || HEIGHT,
+    gutter: config.gutter || GUTTER,
+    noOfItems: config.noOfItems || ITEMS,
+    hideScrollbar: config.hideScrollbar || true,
     ref: slideArea,
     onMouseMove: handleEvent,
     onMouseDown: handleEvent,
     onMouseUp: handleEvent,
-    onMouseLeave: handleEvent,
-  }   
+    onMouseLeave: handleEvent
+  };
 
   return {
     slideArea,
     handleEvent,
     hsProps,
-    HSContainer,
-    HSNoScrollbar,
-   } // HorizontalScroller
-}
+    HSNoScrollbar
+  }; // HorizontalScroller
+};
+
+// export const HorizontalScroller = React.forwardRef(({ children, ...hsProps, ref }) => (
+//   <HSNoScrollbar ref={ref} {...hsProps}>{children}</HSNoScrollbar>
+// ))
