@@ -1,9 +1,6 @@
 import styled, { css } from "styled-components";
 
-export const HSNoScrollbar = styled.div<{
-  noOfItems?: number;
-  height?: number;
-  gutter?: number;
+export const HsScroller = styled.div<{
   hideScrollbar?: boolean;
 }>`
   overflow-x: scroll;
@@ -17,4 +14,18 @@ export const HSNoScrollbar = styled.div<{
       }
     `
   }}
+  > div {
+    width: max-content;
+  }
+`;
+
+export const Item = styled.div<{
+  itemWidth?: number;
+  height?: number;
+  gutter?: number;
+}>`
+  width:  ${({ itemWidth }) => `${itemWidth || 200}px`};
+  height:  ${({ height }) => `${height || 100}px`};
+  margin:  ${({ gutter }) => `${gutter || 10}px`};
+  display: inline-flex;
 `;

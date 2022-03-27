@@ -1,6 +1,6 @@
 import { useRef, useReducer, RefObject, MouseEvent } from "react";
 
-import { HSNoScrollbar } from "./styles";
+import { HsScroller, Item } from "./styles";
 
 const HEIGHT = 200;
 const GUTTER = 10;
@@ -74,7 +74,7 @@ const dragReducer = (
 };
 
 export const useDraggableScroll = (config: Config) => {
-  const slideArea = useRef<HTMLDivElement>(null);
+  const slideAreaRef = useRef<HTMLDivElement>(null);
   const [, dispatch] = useReducer(dragReducer, initialState);
 
   /** The same event is passed to multipe mouseevents for the draggable
@@ -87,8 +87,8 @@ export const useDraggableScroll = (config: Config) => {
     e.persist();
     const { type, pageX } = e;
     // We dispatch the reducer with some event attributes and
-    // our Dom ref `slideArea`
-    dispatch({ type, pageX, element: slideArea });
+    // our Dom ref `slideAreaRef`
+    dispatch({ type, pageX, element: slideAreaRef });
   };
 
   const hsProps = {
@@ -96,7 +96,7 @@ export const useDraggableScroll = (config: Config) => {
     gutter: config.gutter || GUTTER,
     noOfItems: config.noOfItems || ITEMS,
     hideScrollbar: config.hideScrollbar || true,
-    ref: slideArea,
+    ref: slideAreaRef,
     onMouseMove: handleEvent,
     onMouseDown: handleEvent,
     onMouseUp: handleEvent,
@@ -104,13 +104,10 @@ export const useDraggableScroll = (config: Config) => {
   };
 
   return {
-    slideArea,
+    slideAreaRef,
     handleEvent,
     hsProps,
-    HSNoScrollbar
-  }; // HorizontalScroller
+    HsScroller,
+    Item,
+  };
 };
-
-// export const HorizontalScroller = React.forwardRef(({ children, ...hsProps, ref }) => (
-//   <HSNoScrollbar ref={ref} {...hsProps}>{children}</HSNoScrollbar>
-// ))
