@@ -9,48 +9,36 @@ yarn add @lxm7/use-draggable-scroll
 ### Usage
 Uses the base layer styling from this article <a href='https://uxdesign.cc/creating-horizontal-scrolling-containers-the-right-way-css-grid-c256f64fc585'>https://uxdesign.cc/creating-horizontal-scrolling-containers-the-right-way-css-grid-c256f64fc585</a>
 
-Currently uses defaults and encapsulated styles and state from the hook library to allow for minimal implementation effort in the UI. 
-TODO: add user config option to hook. Keep multiple refs unique.
+Can use defaults along with base layer styles and refs encapsulated in the lib to allow for minimal implementation effort in the UI.
 
 ```
-import { useDraggableScroll } from '@lxm7/use-draggable-scroll';
+import React from "react";
+import { useDraggableScroll, Config } from "./useDraggableScroll";
 
-const Usage = () => {
-  const { hsProps, HSNoScrollbar } = useDraggableScroll();
+const ScrollRow: React.FC<{ config: Config }> = ({ config }) => {
+  const { hsProps, HsScroller, Item } = useDraggableScroll(config);
 
   return (
-    <HSNoScrollbar {...hsProps}>
-      <div style={{ width: "max-content" }}>
-        <div
-          style={{
-            height: HEIGHT,
-            display: "inline-block",
-            background: "red",
-            width: "300px",
-            margin: "10px"
-          }}
-        />
-        <div
-          style={{
-            height: HEIGHT,
-            display: "inline-block",
-            background: "red",
-            width: "300px",
-            margin: "10px"
-          }}
-        />
-        <div
-          style={{
-            height: HEIGHT,
-            display: "inline-block",
-            background: "red",
-            width: "300px",
-            margin: "10px"
-          }}
-        />
+    <HsScroller {...hsProps}>
+      <div>
+        {Array.from({ length: config.noOfItems }, (_, i) => i + 1).map(item => (
+          <Item
+            key={item}
+            style={{
+              background: "red",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "white"
+            }}
+          >
+            {item}
+          </Item>
+        ))}
       </div>
-    </HSNoScrollbar>
-  )
-}
+    </HsScroller>
+  );
+};
+
+export default ScrollRow;
 
 ```
