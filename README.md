@@ -13,17 +13,22 @@ Can use defaults along with base layer styles and refs encapsulated in the lib t
 
 ```
 import React from "react";
-import { useDraggableScroll, Config } from "./useDraggableScroll";
+import { useDraggableScroll, Config } from "@lxm7/use-draggable-scroll";
 
 const ScrollRow: React.FC<{ config: Config }> = ({ config }) => {
   const { hsProps, HsScroller, Item } = useDraggableScroll(config);
 
   return (
-    <HsScroller {...hsProps}>
+    <HsScroller {...hsProps} {...config}>
       <div>
         {Array.from({ length: config.noOfItems }, (_, i) => i + 1).map(item => (
           <Item
             key={item}
+            // optional base styles
+            height={config.height}
+            itemWidth={config.itemWidth}
+            gutter={config.gutter}
+            // custom styles on top of base Item
             style={{
               background: "red",
               justifyContent: "center",
